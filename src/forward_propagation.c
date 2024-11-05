@@ -16,8 +16,9 @@ void mat_mul(double* a, double** b, double* result, int n, int p) {
     // matrix result of size 1 x p (array)
     // result = a * b
     int j, k;
-    
-    for (j = 0; j < p; j++) {
+    #pragma omp parallel for
+    for (j = 0; j < p; j++) 
+    {
         result[j] = 0.0;
         for (k = 0; k < n; k++)
             result[j] += (a[k] * b[k][j]);
@@ -52,6 +53,7 @@ void relu(int n, double* input, double* output) {
     output[0] = 1; // Bias term
 
     int i;
+    #pragma omp parallel for
     for (i = 0; i < n; i++) 
         output[i+1] = max(0.0, input[i]); // ReLU function
 }

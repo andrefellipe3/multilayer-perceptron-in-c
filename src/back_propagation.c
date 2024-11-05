@@ -6,7 +6,7 @@ GitHub: https://github.com/manoharmukku/multilayer-perceptron-in-c
 */
 
 #include "back_propagation.h"
-
+#include <omp.h>
 void d_identity(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
     for (i = 0; i < layer_size; i++)
@@ -27,6 +27,7 @@ void d_tanh(int layer_size, double* layer_input, double* layer_output, double* l
 
 void d_relu(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
+    #pragma omp parallel for
     for (i = 0; i < layer_size; i++) {
         if (layer_input[i] > 0)
             layer_derivative[i] = 1;
@@ -150,7 +151,7 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
                 break;
             case 4: // relu
                 d_relu(layer_sizes[layer_no], layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
-
+                #pragma omp parallel for
                 for (i = 0; i < layer_sizes[layer_no]; i++) {
                     double error = 0.0;
                     for (j = 0; j < layer_sizes[layer_no+1]; j++)
