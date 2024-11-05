@@ -19,9 +19,9 @@ $(EXECUTABLE): $(SRC_DIR)/main.c $(OBJECTS)
 openmp: $(SRC_DIR)/main.c $(OBJECTS)
 	$(CC) $(CFLAGS) $(CFLAGS_OPENMP) $< $(OBJECTS) -o $(EXECUTABLE) -I $(INCL_DIR) -lm
 
-# Compilar arquivos .c em .o (normal)
+# Compilar arquivos .c em .o com OpenMP e otimização
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INCLUDES)
-	$(CC) $(CFLAGS) -I $(INCL_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_OPENMP) -I $(INCL_DIR) -c $< -o $@
 
 # Limpeza de arquivos gerados
 clean:
