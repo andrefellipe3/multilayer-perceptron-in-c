@@ -1,10 +1,3 @@
-/*
-Author: Manohar Mukku
-Date: 21.07.2018
-Desc: Feedforward propagation
-GitHub: https://github.com/manoharmukku/multilayer-perceptron-in-c
-*/
-
 #include "forward_propagation.h"
 #include <omp.h>
 
@@ -16,9 +9,8 @@ void mat_mul(double* a, double** b, double* result, int n, int p) {
     // matrix result of size 1 x p (array)
     // result = a * b
     int j, k;
-    #pragma omp parallel for
-    for (j = 0; j < p; j++) 
-    {
+
+    for (j = 0; j < p; j++) {
         result[j] = 0.0;
         for (k = 0; k < n; k++)
             result[j] += (a[k] * b[k][j]);
@@ -53,7 +45,6 @@ void relu(int n, double* input, double* output) {
     output[0] = 1; // Bias term
 
     int i;
-    #pragma omp parallel for
     for (i = 0; i < n; i++) 
         output[i+1] = max(0.0, input[i]); // ReLU function
 }
@@ -79,6 +70,7 @@ void forward_propagation(parameters* param, int training_example, int n_layers, 
 
     // Perform forward propagation for each hidden layer
     // Calculate input and output of each hidden layer
+    #pragma omp parallel for
     for (i = 1; i < n_layers-1; i++) {
         // Compute layer_inputs[i]
         mat_mul(layer_outputs[i-1], param->weight[i-1], layer_inputs[i], layer_sizes[i-1]+1, layer_sizes[i]);

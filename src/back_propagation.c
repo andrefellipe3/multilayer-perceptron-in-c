@@ -151,7 +151,7 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
                 break;
             case 4: // relu
                 d_relu(layer_sizes[layer_no], layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
-                #pragma omp parallel for
+
                 for (i = 0; i < layer_sizes[layer_no]; i++) {
                     double error = 0.0;
                     for (j = 0; j < layer_sizes[layer_no+1]; j++)
