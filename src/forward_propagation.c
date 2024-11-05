@@ -6,6 +6,7 @@ GitHub: https://github.com/manoharmukku/multilayer-perceptron-in-c
 */
 
 #include "forward_propagation.h"
+#include <omp.h>
 
 #define max(x, y) (x > y ? x : y)
 
@@ -15,6 +16,7 @@ void mat_mul(double* a, double** b, double* result, int n, int p) {
     // matrix result of size 1 x p (array)
     // result = a * b
     int j, k;
+    #pragma omp parallel for
     for (j = 0; j < p; j++) {
         result[j] = 0.0;
         for (k = 0; k < n; k++)
