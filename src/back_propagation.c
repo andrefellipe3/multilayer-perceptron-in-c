@@ -27,7 +27,7 @@ void d_tanh(int layer_size, double* layer_input, double* layer_output, double* l
 
 void d_relu(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (i = 0; i < layer_size; i++) {
         if (layer_input[i] > 0)
             layer_derivative[i] = 1;
