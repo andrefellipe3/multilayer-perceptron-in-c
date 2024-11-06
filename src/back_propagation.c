@@ -70,7 +70,7 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
             case 1: // identity
                 d_identity(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
 
-                #pragma omp target map(to:error_output[:width])map(to:layer_derivatives[:width*width])map(tofrom:local_gradient[:width*width])
+                #pragma omp target map(to:error_output[:i])map(to:layer_derivatives[:layer_no*i])map(tofrom:local_gradient[:layer_no*i])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
