@@ -43,7 +43,7 @@ void d_relu(int layer_size, double* layer_input, double* layer_output, double* l
 
 void d_softmax(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (i = 0; i < layer_size; i++)
         layer_derivative[i] = layer_output[i+1] * (1.0 - layer_output[i+1]);
 }
