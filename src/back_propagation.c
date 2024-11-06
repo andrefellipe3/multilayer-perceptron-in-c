@@ -76,15 +76,17 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
 
                 break;
             case 2: // sigmoid
+            
                 d_sigmoid(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
-
+                #pragma omp target map(to:error_output[:i])map(to:layer_derivatives[:layer_no*i])map(tofrom:local_gradient[:layer_no*i])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
                 break;
             case 3: // tanh
                 d_tanh(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
-
+                
+                #pragma omp target map(to:error_output[:i])map(to:layer_derivatives[:layer_no*i])map(tofrom:local_gradient[:layer_no*i])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
@@ -92,13 +94,14 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
             case 4: // relu
                 d_relu(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
 
+                #pragma omp target map(to:error_output[:i])map(to:layer_derivatives[:layer_no*i])map(tofrom:local_gradient[:layer_no*i])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
                 break;
             case 5: // softmax
                 d_softmax(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
-
+                #pragma omp target map(to:error_output[:i])map(to:layer_derivatives[:layer_no*i])map(tofrom:local_gradient[:layer_no*i])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
