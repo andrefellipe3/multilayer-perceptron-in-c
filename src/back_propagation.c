@@ -9,29 +9,28 @@ GitHub: https://github.com/manoharmukku/multilayer-perceptron-in-c
 #include <omp.h>
 void d_identity(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+
     for (i = 0; i < layer_size; i++)
         layer_derivative[i] = 1;
 }
 
 void d_sigmoid(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+
     for (i = 0; i < layer_size; i++)
         layer_derivative[i] = layer_output[i+1] * (1.0 - layer_output[i+1]);
 }
 
 void d_tanh(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+
     for (i = 0; i < layer_size; i++)
         layer_derivative[i] = 1.0 - layer_output[i+1] * layer_output[i+1];
 }
 
 void d_relu(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
-    for (i = 0; i < layer_size; i++) {
+        for (i = 0; i < layer_size; i++) {
         if (layer_input[i] > 0)
             layer_derivative[i] = 1;
         else if (layer_input[i] < 0)
@@ -43,7 +42,7 @@ void d_relu(int layer_size, double* layer_input, double* layer_output, double* l
 
 void d_softmax(int layer_size, double* layer_input, double* layer_output, double* layer_derivative) {
     int i;
-    #pragma omp parallel for
+
     for (i = 0; i < layer_size; i++)
         layer_derivative[i] = layer_output[i+1] * (1.0 - layer_output[i+1]);
 }
@@ -71,6 +70,7 @@ void calculate_local_gradient(parameters* param, int layer_no, int n_layers, int
             case 1: // identity
                 d_identity(param->output_layer_size, layer_inputs[layer_no], layer_outputs[layer_no], layer_derivatives[layer_no]);
 
+                #pragma omp target map(to:error_output[:width])map(to:layer_derivatives[:width*width])map(tofrom:local_gradient[:width*width])
                 for (i = 0; i < param->output_layer_size; i++)
                     local_gradient[layer_no][i] = error_output[i] * layer_derivatives[layer_no][i];
 
